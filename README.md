@@ -17,7 +17,6 @@ I study Information Technology at Western Sydney University and build full-stack
 
 ## Projects
 
-- [**Fitness Tracker**](https://fit.kobulai.blog) — Full-stack web application. Apple Health data syncs via webhook to a Node.js API running on an Oracle Cloud VPS, managed with PM2 behind nginx. Frontend deployed on Vercel.
 - [**kobulai.blog**](https://kobulai.blog) — Personal site with a custom CMS that integrates the AniList GraphQL API client-side, deployed through Vercel with Cloudflare in front.
 
 ## Contact
