@@ -15,6 +15,8 @@
 
 I study Information Technology at Western Sydney University and build full-stack applications on infrastructure I deploy and manage myself. This covers the complete stack: Node.js and Express backends, nginx reverse proxying with SSL, DNS and firewall configuration on Oracle Cloud, containerised services with Docker, and deployment pipelines through GitHub and Vercel.
 
+![banner](https://raw.githubusercontent.com/kobulai/kobulai/main/banner.gif)
+
 ## Projects
 
 - [**kobulai.blog**](https://kobulai.blog) — Personal site with a custom CMS that integrates the AniList GraphQL API client-side, deployed through Vercel with Cloudflare in front.
@@ -29,4 +31,3 @@ I study Information Technology at Western Sydney University and build full-stack
 ![GitHub activity graph](https://github-readme-activity-graph.vercel.app/graph?username=kobulai&theme=vesper&hide_border=true)
 
 <img width=100% src="https://capsule-render.vercel.app/api?type=waving&color=40E0D0&height=140&section=footer" alt="footer"/>
-
