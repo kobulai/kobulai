@@ -1,0 +1,70 @@
+
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } = process.env;
+
+  if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_REFRESH_TOKEN) {
+    return res.status(500).json({ error: 'Missing Spotify credentials' });
+  }
+
+  const basic = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64');
+  const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${basic}`,
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: SPOTIFY_REFRESH_TOKEN,
+    }),
+  });
+
+  const { access_token } = await tokenRes.json();
+
+  const currentRes = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+    headers: { Authorization: `Bearer ${access_token}` },
+  });
+
+  if (currentRes.status === 200) {
+    const current = await currentRes.json();
+    if (current?.item?.type === 'track') {
+      const img = current.item.album.images;
+      return res.json({
+        isPlaying:   current.is_playing,
+        trackId:     current.item.id,
+        title:       current.item.name,
+        artist:      current.item.artists.map(a => a.name).join(', '),
+        albumArt:    (img[1] || img[0])?.url ?? null,
+        progressMs:  current.progress_ms,
+        durationMs:  current.item.duration_ms,
+        trackUrl:    current.item.external_urls.spotify,
+      });
+    }
+  }
+
+  const recentRes = await fetch('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
+    headers: { Authorization: `Bearer ${access_token}` },
+  });
+
+  if (recentRes.ok) {
+    const recent = await recentRes.json();
+    const track  = recent.items?.[0]?.track;
+    if (track) {
+      const img = track.album.images;
+      return res.json({
+        isPlaying:   false,
+        trackId:     track.id,
+        title:       track.name,
+        artist:      track.artists.map(a => a.name).join(', '),
+        albumArt:    (img[1] || img[0])?.url ?? null,
+        progressMs:  0,
+        durationMs:  track.duration_ms,
+        trackUrl:    track.external_urls.spotify,
+      });
+    }
+  }
+
+  return res.status(204).end();
+}
